@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "chainmine",
+  "id": "chainmine-core",
   "version": "${version}",
   "name": "ChainMine Core",
   "description": "Mine entire veins in one swing — the spiritual successor of Vein Miner. Sneak to chain-break blocks in a regular shape.",

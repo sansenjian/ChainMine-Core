@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 public final class ChainMineNetworking {
 
     /** 连锁计数 payload 类型 ID（play → S2C） */
-    public static final Identifier CHAIN_COUNT_ID = Identifier.of("chainmine", "chain_count");
+    public static final Identifier CHAIN_COUNT_ID = Identifier.of("chainmine-core", "chain_count");
 
     private ChainMineNetworking() {
     }

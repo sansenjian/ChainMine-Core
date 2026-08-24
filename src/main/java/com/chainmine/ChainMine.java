@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
  * </ul>
  */
 public class ChainMine implements ModInitializer {
-    public static final String MOD_ID = "chainmine";
+    public static final String MOD_ID = "chainmine-core";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    /** 测试/标志物品：红宝石。可用 /give @s chainmine:ruby 获取 */
+    /** 测试/标志物品：红宝石。可用 /give @s chainmine-core:ruby 获取 */
     public static final Item RUBY = new Item(new Item.Settings());
 
     @Override

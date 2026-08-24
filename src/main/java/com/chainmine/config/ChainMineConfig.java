@@ -76,7 +76,7 @@ public final class ChainMineConfig {
     }
 
     public static Path getConfigPath() {
-        return FabricLoader.getInstance().getConfigDir().resolve("chainmine.json");
+        return FabricLoader.getInstance().getConfigDir().resolve("chainmine-core.json");
     }
 
     /** 首次加载：文件不存在则写出默认配置；存在则读取。 */

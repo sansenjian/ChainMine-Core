@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'chainmine'
+rootProject.name = 'chainmine-core'

@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "id": "chainmine",
   "version": "${version}",
-  "name": "ChainMine",
-  "description": "Mine entire veins in one swing — the spiritual successor of Vein Miner. Sneak to chain-break connected identical blocks.",
+  "name": "ChainMine Core",
+  "description": "Mine entire veins in one swing — the spiritual successor of Vein Miner. Sneak to chain-break blocks in a regular shape.",
   "authors": [
     "ChainMine Dev"
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/chainmine",
-    "sources": "https://github.com/ChainMine/ChainMine"
+    "sources": "https://github.com/sansenjian/ChainMine-Core"
   },
   "license": "MIT",
   "icon": "assets/chainmine/icon.png",

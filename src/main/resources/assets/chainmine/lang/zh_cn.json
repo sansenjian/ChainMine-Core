@@ -1,0 +1,11 @@
+{
+  "item.chainmine.ruby": "红宝石",
+  "hud.chainmine.count": "连锁挖掘: +%s 个方块",
+  "screen.chainmine.title": "ChainMine 配置",
+  "screen.chainmine.done": "完成",
+  "screen.chainmine.sneak": "需要潜行: %s",
+  "screen.chainmine.maxblocks": "最大方块数: %s",
+  "screen.chainmine.tools": "允许的工具: %s",
+  "screen.chainmine.hint1": "编辑 config/chainmine.json 修改配置，",
+  "screen.chainmine.hint2": "然后执行 /chainmine reload（需要 OP 权限）。"
+}

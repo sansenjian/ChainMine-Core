@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+.gradle-cache*/
+build/
+out/
+
+# 构建/运行日志
+*.log
+proc_check.txt
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# Minecraft run dir（含本地生成的 config/eula/世界数据）
+run/
+
+# WorkBuddy 工作区数据（项目记忆等，不进仓库）
+.workbuddy/
+
+# OS
+.DS_Store
+Thumbs.db

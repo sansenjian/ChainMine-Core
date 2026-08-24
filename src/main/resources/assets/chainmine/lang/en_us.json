@@ -1,0 +1,11 @@
+{
+  "item.chainmine.ruby": "Ruby",
+  "hud.chainmine.count": "ChainMine: +%s blocks",
+  "screen.chainmine.title": "ChainMine Configuration",
+  "screen.chainmine.done": "Done",
+  "screen.chainmine.sneak": "Sneak required: %s",
+  "screen.chainmine.maxblocks": "Max blocks: %s",
+  "screen.chainmine.tools": "Allowed tools: %s",
+  "screen.chainmine.hint1": "Edit config/chainmine.json to change values,",
+  "screen.chainmine.hint2": "then run /chainmine reload (requires OP)."
+}

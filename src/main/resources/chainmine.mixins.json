@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.chainmine.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ServerPlayerInteractionManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

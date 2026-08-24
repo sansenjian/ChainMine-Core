@@ -88,7 +88,7 @@
 
 ```bash
 # 需要 JDK 21
-./gradlew build          # 编译 + 打包（产出 build/libs/chainmine-core-1.0.0.jar）
+./gradlew build          # 编译 + 打包（产出 build/libs/chainmine-core-1.1.0.jar）
 ./gradlew runClient      # 启动开发客户端
 ./gradlew runServer      # 启动开发服务端
 ./gradlew test           # 运行单元测试（13 个用例）

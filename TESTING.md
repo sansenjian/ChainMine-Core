@@ -121,7 +121,7 @@
 
 **通过标准**（控制台日志）：
 - `Loading Minecraft 1.21.1 with Fabric Loader 0.16.10`
-- `- chainmine 1.0.0`
+- `- chainmine-core 1.1.0`
 - `[ChainMine] Created default config at .\config\chainmine.json`
 - `[ChainMine] initialized. Ruby registered: chainmine:ruby`
 - `Done (x.xs)!` —— 完整启动，无 Exception/CRASH

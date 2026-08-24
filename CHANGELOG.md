@@ -3,10 +3,10 @@
 All notable changes to **ChainMine Core** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/), version follows [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] - 2026-08-24
+## [1.1.0] - 2026-08-25
 
 ### Added
-- Initial release on Modrinth
+- Initial public release (Modrinth) — version 1.1.0 carries the feature set of the full development iteration:
 - **Core mechanic**: sneak + mine any block to chain-break identical neighbors
 - **Two scan modes** (configurable, default `CUBE`):
   - `CUBE` — regular 3D shape (default `3×3×3`); clean stone/ore clearing

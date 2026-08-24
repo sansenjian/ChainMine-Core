@@ -15,7 +15,7 @@ and a third (in repo root) for the release entry.
 
 | File | Purpose |
 | --- | --- |
-| `CHANGELOG.md` | Use the `[1.0.0] - 2026-08-24` section as the version's changelog |
+| `CHANGELOG.md` | Use the `[1.1.0] - 2026-08-25` section as the version's changelog |
 
 ## Manual upload (recommended, ~10 min)
 
@@ -35,12 +35,12 @@ and a third (in repo root) for the release entry.
 
 4. **Create a version** at <https://modrinth.com/dashboard/projects/chainmine-core/version/new>
    (the slug becomes the URL after project creation)
-   - Version number: `1.0.0`
+   - Version number: `1.1.0`
    - Version title (optional): `Initial release`
-   - Changelog: paste the `[1.0.0]` section from `CHANGELOG.md`
+   - Changelog: paste the `[1.1.0]` section from `CHANGELOG.md`
    - Minecraft versions: `1.21.1`
    - Mod loaders: `fabric`
-   - Upload the **primary file**: `build/libs/chainmine-core-1.0.0.jar`
+   - Upload the **primary file**: `build/libs/chainmine-core-1.1.0.jar`
    - Dependencies: click "Add dependency" →
      - Project ID / slug: `fabric-api`
      - Version range: `*` (any compatible)
@@ -69,8 +69,8 @@ it in shared chat channels.
 After `./gradlew build`, the mod jar lives at:
 
 ```
-build/libs/chainmine-core-1.0.0.jar          # the mod itself
-build/libs/chainmine-core-1.0.0-sources.jar  # optional, for deobfuscation
+build/libs/chainmine-core-1.1.0.jar          # the mod itself
+build/libs/chainmine-core-1.1.0-sources.jar  # optional, for deobfuscation
 ```
 
 Only the first one is needed for Modrinth upload.

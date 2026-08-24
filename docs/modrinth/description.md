@@ -25,7 +25,7 @@
 1. Install [Fabric Loader](https://fabricmc.net/use/) **0.16.10+** for Minecraft **1.21.1**
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api) for 1.21.1
 3. *(Optional)* Install [Mod Menu](https://modrinth.com/mod/modmenu) for the in-game config screen
-4. Drop `chainmine-core-1.0.0.jar` into your `mods/` folder
+4. Drop `chainmine-core-1.1.0.jar` into your `mods/` folder
 
 ---
 
@@ -67,7 +67,7 @@ Config file: `config/chainmine-core.json` (auto-generated on first run). Reload 
 
 ## 📷 Gallery
 
-*In-game screenshots coming soon. Build tested on dedicated server: `Done (6s)`, zero crashes, chainmine-core 1.0.0 loaded successfully.*
+*In-game screenshots coming soon. Build tested on dedicated server: `Done (6s)`, zero crashes, chainmine-core 1.1.0 loaded successfully.*
 
 ---
 

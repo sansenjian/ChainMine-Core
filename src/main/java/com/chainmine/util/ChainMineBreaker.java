@@ -96,7 +96,8 @@ public final class ChainMineBreaker {
                 continue;
             }
 
-            ServerWorld world = chain.player.getServerWorld();
+            // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tick 场景安全强转）
+            ServerWorld world = (ServerWorld) chain.player.getEntityWorld();
             int done = 0;
             while (chain.cursor < chain.blocks.size() && done < chain.perTick) {
                 BlockPos pos = chain.blocks.get(chain.cursor++);

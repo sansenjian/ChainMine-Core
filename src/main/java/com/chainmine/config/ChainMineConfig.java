@@ -5,12 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.chainmine.ChainMine;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.item.ShovelItem;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
@@ -21,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -159,23 +158,28 @@ public final class ChainMineConfig {
         }
     }
 
-    /** 工具是否在白名单内（按物品类别判断）。 */
+    /** 工具是否在白名单内（按物品类别判断）。
+     *  1.21.2+ 移除了 PickaxeItem 等具体工具类，改用 ItemTags（minecraft:pickaxes 等）。 */
     public boolean isToolAllowed(Item item) {
         if (item == null || toolWhitelist == null) {
             return false;
         }
-        boolean isPickaxe = item instanceof PickaxeItem;
-        boolean isAxe = item instanceof AxeItem;
-        boolean isShovel = item instanceof ShovelItem;
-        boolean isHoe = item instanceof HoeItem;
-        boolean matched = isPickaxe || isAxe || isShovel || isHoe;
-        if (!matched) {
-            return false;
+        for (String type : toolWhitelist) {
+            TagKey<Item> tag = TOOL_TAGS.get(type);
+            if (tag != null && item.getRegistryEntry().isIn(tag)) {
+                return true;
+            }
         }
-        // 类别 → 白名单字符串
-        String category = isPickaxe ? "pickaxe" : isAxe ? "axe" : isShovel ? "shovel" : "hoe";
-        return toolWhitelist.contains(category);
+        return false;
     }
+
+    /** 工具类型 → 物品 tag（1.21.2+ 工具系统统一为 tag 判定）。 */
+    private static final Map<String, TagKey<Item>> TOOL_TAGS = Map.of(
+            "pickaxe", ItemTags.PICKAXES,
+            "axe", ItemTags.AXES,
+            "shovel", ItemTags.SHOVELS,
+            "hoe", ItemTags.HOES
+    );
 
     /** 方块是否在黑名单内（禁止连锁）。 */
     public boolean isBlockBlacklisted(Block block) {

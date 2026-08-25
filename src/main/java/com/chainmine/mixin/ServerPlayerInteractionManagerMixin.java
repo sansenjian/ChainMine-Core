@@ -89,7 +89,8 @@ public class ServerPlayerInteractionManagerMixin {
             return;
         }
 
-        ServerWorld world = player.getServerWorld();
+        // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tryBreakBlock 场景安全强转）
+        ServerWorld world = (ServerWorld) player.getEntityWorld();
         BlockState state = world.getBlockState(pos);
         if (state.isAir()) {
             return;
@@ -153,7 +154,8 @@ public class ServerPlayerInteractionManagerMixin {
 
     /** 单 tick 全部破坏：类型校验 → 黑名单校验 → 工具保护 → breakBlock → postMine。 */
     private void breakAllImmediately(ChainMineConfig config) {
-        ServerWorld world = player.getServerWorld();
+        // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tryBreakBlock 场景安全强转）
+        ServerWorld world = (ServerWorld) player.getEntityWorld();
         int broken = 0;
         for (BlockPos targetPos : chainMine$pending) {
             BlockState state = world.getBlockState(targetPos);

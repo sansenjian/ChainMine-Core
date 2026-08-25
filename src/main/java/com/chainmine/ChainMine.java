@@ -4,9 +4,13 @@ import com.chainmine.config.ChainMineConfig;
 import com.chainmine.network.ChainMineNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.permission.Permission;
+import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -27,13 +31,16 @@ public class ChainMine implements ModInitializer {
     public static final String MOD_ID = "chainmine-core";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    /** 测试/标志物品：红宝石。可用 /give @s chainmine-core:ruby 获取 */
-    public static final Item RUBY = new Item(new Item.Settings());
+    /** 测试/标志物品：红宝石。可用 /give @s chainmine-core:ruby 获取。
+     *  1.21.2+ 要求物品设置显式 registryKey，否则启动抛 "Item id not set" NPE。 */
+    public static final RegistryKey<Item> RUBY_KEY =
+            RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "ruby"));
+    public static final Item RUBY = new Item(new Item.Settings().registryKey(RUBY_KEY));
 
     @Override
     public void onInitialize() {
         // Phase 1: 注册测试物品，验证注册表与资源加载链路
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "ruby"), RUBY);
+        Registry.register(Registries.ITEM, RUBY_KEY, RUBY);
 
         // Phase 4: 配置加载 + 热重载命令
         ChainMineConfig.load();
@@ -51,8 +58,10 @@ public class ChainMine implements ModInitializer {
     private void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
                 dispatcher.register(CommandManager.literal(MOD_ID)
-                        // OP 权限（权限等级 2）才可执行
-                        .requires(source -> source.hasPermissionLevel(2))
+                        // OP 权限（权限等级 2 = GAMEMASTERS）才可执行
+                        // 1.21.2+ 权限系统重构：hasPermissionLevel(int) → PermissionPredicate + Permission.Level
+                        .requires(source -> source.getPermissions()
+                                .hasPermission(new Permission.Level(PermissionLevel.GAMEMASTERS)))
                         .then(CommandManager.literal("reload")
                                 .executes(ctx -> {
                                     ChainMineConfig.reload();

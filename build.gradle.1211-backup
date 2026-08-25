@@ -1,6 +1,5 @@
 plugins {
-    // 1.21.2+ 需要支持新 unpick 格式的 Loom；1.21.1 原版 1.10-SNAPSHOT 见 build.gradle.1211-backup
-    id 'fabric-loom' version '1.17.19'
+    id 'fabric-loom' version '1.10-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -30,9 +29,9 @@ dependencies {
     // Fabric API
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // Mod Menu —— 1.21.11 多版本测试阶段临时停用（排除 remap 变量）；恢复时放开下面两行
-    // modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
-    // modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
+    // Mod Menu —— 编译期需要（ModMenuApi 接口），运行时可选
+    modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // 单元测试（Phase 2：BFS 算法验证）
     // fabric-loader-junit：Fabric 官方推荐的 JUnit 插件，负责应用 access widener，

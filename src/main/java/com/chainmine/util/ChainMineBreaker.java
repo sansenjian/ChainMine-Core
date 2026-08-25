@@ -1,5 +1,6 @@
 package com.chainmine.util;
 
+import com.chainmine.compat.VersionCompat;
 import com.chainmine.config.ChainMineConfig;
 import com.chainmine.network.ChainMineNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -96,8 +97,8 @@ public final class ChainMineBreaker {
                 continue;
             }
 
-            // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tick 场景安全强转）
-            ServerWorld world = (ServerWorld) chain.player.getEntityWorld();
+            // 版本感知：getServerWorld() 在 1.21.2+ 移除；VersionCompat 兼容 getWorld/getEntityWorld
+            ServerWorld world = VersionCompat.getServerWorld(chain.player);
             int done = 0;
             while (chain.cursor < chain.blocks.size() && done < chain.perTick) {
                 BlockPos pos = chain.blocks.get(chain.cursor++);

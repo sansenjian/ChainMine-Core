@@ -1,5 +1,6 @@
 package com.chainmine.mixin;
 
+import com.chainmine.compat.VersionCompat;
 import com.chainmine.config.ChainMineConfig;
 import com.chainmine.network.ChainMineNetworking;
 import com.chainmine.util.ChainMineBreaker;
@@ -89,8 +90,8 @@ public class ServerPlayerInteractionManagerMixin {
             return;
         }
 
-        // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tryBreakBlock 场景安全强转）
-        ServerWorld world = (ServerWorld) player.getEntityWorld();
+        // 版本感知：getServerWorld() 在 1.21.2+ 移除；VersionCompat 兼容 getWorld/getEntityWorld
+        ServerWorld world = VersionCompat.getServerWorld(player);
         BlockState state = world.getBlockState(pos);
         if (state.isAir()) {
             return;
@@ -154,8 +155,8 @@ public class ServerPlayerInteractionManagerMixin {
 
     /** 单 tick 全部破坏：类型校验 → 黑名单校验 → 工具保护 → breakBlock → postMine。 */
     private void breakAllImmediately(ChainMineConfig config) {
-        // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tryBreakBlock 场景安全强转）
-        ServerWorld world = (ServerWorld) player.getEntityWorld();
+        // 版本感知：getServerWorld() 在 1.21.2+ 移除；VersionCompat 兼容 getWorld/getEntityWorld
+        ServerWorld world = VersionCompat.getServerWorld(player);
         int broken = 0;
         for (BlockPos targetPos : chainMine$pending) {
             BlockState state = world.getBlockState(targetPos);

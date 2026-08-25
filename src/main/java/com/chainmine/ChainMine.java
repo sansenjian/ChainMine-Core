@@ -1,11 +1,10 @@
 package com.chainmine;
 
+import com.chainmine.compat.VersionCompat;
 import com.chainmine.config.ChainMineConfig;
 import com.chainmine.network.ChainMineNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.permission.Permission;
-import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -58,10 +57,9 @@ public class ChainMine implements ModInitializer {
     private void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
                 dispatcher.register(CommandManager.literal(MOD_ID)
-                        // OP 权限（权限等级 2 = GAMEMASTERS）才可执行
-                        // 1.21.2+ 权限系统重构：hasPermissionLevel(int) → PermissionPredicate + Permission.Level
-                        .requires(source -> source.getPermissions()
-                                .hasPermission(new Permission.Level(PermissionLevel.GAMEMASTERS)))
+                        // OP 权限（等级 2）才可执行；VersionCompat 兼容新旧两代权限系统
+                        //（1.21.2~1.21.10 hasPermissionLevel；1.21.11+ Permission 系统）
+                        .requires(VersionCompat::hasOpLevel2)
                         .then(CommandManager.literal("reload")
                                 .executes(ctx -> {
                                     ChainMineConfig.reload();

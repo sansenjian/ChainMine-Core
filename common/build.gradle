@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'fabric-loom' version '1.17.19'
+    // TODO(重构): 接入 Architectury 插件后放开下面两行（neoforge 模块构建时自动把
+    // 本模块的 yarn 字节码 remap 到 mojmap，实现双加载器共享同一份源码）
+    // id 'architectury-plugin' version 'X.Y.Z'
+}
+
+base {
+    archivesName = 'chainmine-core-common'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+// TODO(重构): 接入前需在根 settings.gradle 加 include('common')，并在根 build.gradle
+// 补充 architectury { common("fabric", "neoforge") } 的模块声明。
+// 当前骨架阶段不接入构建，避免破坏现有 fabric 模块的可构建状态。
+
+repositories {
+    maven { url = "https://maven.fabricmc.net/" }
+}
+
+loom {
+    // common 模块只需编译 Minecraft + yarn 映射，不产出 mod jar
+    silentMojangMappingsLicense()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    compileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // 单元测试（纯逻辑，不依赖 Minecraft 运行时）
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+}
+
+test {
+    useJUnitPlatform()
+}

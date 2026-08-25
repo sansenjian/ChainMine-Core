@@ -1,6 +1,7 @@
 # Gradle
 .gradle/
 .gradle-cache*/
+.gradle-*/
 build/
 out/
 

@@ -3,6 +3,7 @@ package com.chainmine.core.breaker;
 import com.chainmine.core.config.ChainMineConfig;
 import com.chainmine.core.platform.ChainMinePlatform;
 import com.chainmine.core.platform.Platforms;
+import com.chainmine.core.platform.VersionCompat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -104,8 +105,9 @@ public final class ChainBreaker {
                 continue;
             }
 
-            // 1.21.2+：getServerWorld() 移除，改 getEntityWorld()（服务端 tick 场景安全强转）
-            ServerWorld world = (ServerWorld) chain.player.getEntityWorld();
+            // 版本感知：getServerWorld() 在 1.21.2+ 移除，改用 VersionCompat 反射兼容
+            //（1.21.9+ 走 getEntityWorld，1.21.2~1.21.8 走 getWorld）
+            ServerWorld world = VersionCompat.getServerWorld(chain.player);
             int done = 0;
             while (chain.cursor < chain.blocks.size() && done < chain.perTick) {
                 BlockPos pos = chain.blocks.get(chain.cursor++);

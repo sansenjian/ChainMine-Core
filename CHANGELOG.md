@@ -3,6 +3,19 @@
 All notable changes to **ChainMine Core** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/), version follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.3] - 2026-08-26
+
+### Added
+- **Version-aware runtime adaptation** (`VersionCompat`) — one JAR now runs across **Minecraft 1.21.2 ~ 1.21.11**:
+  - `Entity.getWorld()` vs `Entity.getEntityWorld()` resolved at runtime via intermediary-name reflection (method-existence probing, no hardcoded version checks)
+  - Permission check adapts between `hasPermissionLevel(int)` (≤1.21.10) and the new `Permission.Level` system (1.21.11+)
+- **Verified on 4 anchor versions** — real dedicated-server boots on 1.21.2, 1.21.5, 1.21.9 and 1.21.11 (build + 13/13 tests + `Done`), covering every API combination in the range.
+- Verified `tryBreakBlock` mixin target stability (`method_14266`) across 1.21.5 / 1.21.10 / 1.21.11.
+
+### Changed
+- Command permission check now goes through `VersionCompat.hasOpLevel2`.
+- World lookup in mixin + breaker now goes through `VersionCompat.getServerWorld`.
+
 ## [1.2.0] - 2026-08-25
 
 ### Changed

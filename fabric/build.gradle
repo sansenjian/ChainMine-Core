@@ -36,6 +36,10 @@ repositories {
 }
 
 dependencies {
+    // 共享核心：依赖 common 的 architectury 转换产物（transformProductionFabric），
+    // shade 进 jar 后由 remapJar 统一 remap 到 intermediary
+    implementation project(path: ':common', configuration: 'transformProductionFabric')
+
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -50,13 +54,17 @@ dependencies {
     testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 }
 
-// 共享核心：直接编译 common 源码（yarn 同映射，remapJar 自动 remap 进 jar）
-sourceSets {
-    main {
-        java {
-            srcDir project(':common').file('src/main/java')
-        }
-    }
+// 打包 common 转换产物进 jar（remapJar 统一 remap 到 intermediary）
+configurations {
+    commonTransform
+}
+
+dependencies {
+    commonTransform project(path: ':common', configuration: 'transformProductionFabric')
+}
+
+jar {
+    from(configurations.commonTransform.collect { it.isDirectory() ? it : zipTree(it) })
 }
 
 processResources {

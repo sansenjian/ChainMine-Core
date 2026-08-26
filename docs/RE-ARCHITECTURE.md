@@ -40,16 +40,23 @@ ChainMine/
 | 构建 DSL | common: `architectury { common("fabric","neoforge") }` | 平台模块: `fabric()` / `neoForge()` |
 | buildscript | 必须显式列仓库 | fabricmc + architectury + forge + neoforged + mavenCentral |
 
-### 关键决策：fabric 模块用 srcDir 共享 common 源码
+### 关键决策：fabric 模块走 architectury 字节码转换（纯 Architectury 模式）
 
 ```
 fabric/build.gradle:
-sourceSets { main { java { srcDir project(':common').file('src/main/java') } } }
+dependencies {
+    implementation project(path: ':common', configuration: 'transformProductionFabric')
+}
+configurations { commonTransform }
+dependencies { commonTransform project(path: ':common', configuration: 'transformProductionFabric') }
+jar { from(configurations.commonTransform.collect { it.isDirectory() ? it : zipTree(it) }) }
 ```
 
-- 同一份 common 源码被 fabric（yarn）直接编译，remapJar 自动把 core 类 remap 进 fabric jar
-- architectury 的 `namedElements` / `common` 配置在此环境未生效，srcDir 最稳
-- neoforge 模块由 architectury 在构建时把 common 的 yarn 字节码 remap 到 mojmap
+- `transformProductionFabric`：common 模块的 architectury 转换产物（yarn 字节码 + @ExpectPlatform 注入）
+- `jar { from(zipTree(...)) }`：把转换产物解包进 fabric jar，remapJar 统一 remap 到 intermediary
+- **已验证**：最终 jar 内 core 类全为 intermediary 名（yarn 名零残留），runServer Done（1.21.11）
+- 踩坑：`namedElements` / `common` 配置、loom `shade`/`include` 在此环境均未生效，`jar.from(zipTree)` 最可靠
+- neoforge 模块由 architectury 在构建时把 common 的 yarn 字节码 remap 到 mojmap（同机制）
 
 ### 版本自适应（VersionCompat）
 

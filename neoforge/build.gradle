@@ -1,23 +1,7 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = "https://maven.fabricmc.net/" }
-        maven { url = "https://maven.architectury.dev/" }
-        maven { url = "https://files.minecraftforge.net/maven/" }
-        maven { url = "https://maven.neoforged.net/releases/" }
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath "me.shedaniel:architectury-plugin:3.5.169"
-        classpath "net.neoforged.gradle:userdev:7.1.38"
-    }
-}
 plugins {
     id 'java'
+    id 'dev.architectury.loom' version '1.17.491'
 }
-
-apply plugin: 'net.neoforged.gradle.userdev'
-apply plugin: 'architectury-plugin'
 
 base {
     archivesName = 'chainmine-core-neoforge'
@@ -26,19 +10,39 @@ base {
 version = project.mod_version
 group = project.maven_group
 
-architectury {
-    neoForge()
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+loom {
+    // architectury-loom 的 NeoForge 模式（AT 转换等）
+    neoForge {
+    }
 }
 
 repositories {
+    maven { url = "https://maven.aliyun.com/repository/central" }
+    mavenCentral()
     maven { url = "https://maven.architectury.dev/" }
     maven { url = "https://maven.neoforged.net/releases/" }
-    mavenCentral()
 }
 
 dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    // NeoForge 用官方映射（mojmap）
+    mappings loom.officialMojangMappings()
+    // architectury-loom 的 forge/neoforge 依赖配置
     neoForge "net.neoforged:neoforge:21.11.45"
 
-    // 共享核心（common 模块；architectury 在构建时把 yarn 字节码 remap 到 mojmap）
+    // 共享核心（loom 构建时把 common 的 yarn 字节码 remap 到 mojmap）
     implementation project(':common')
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand "version": project.version
+    }
 }

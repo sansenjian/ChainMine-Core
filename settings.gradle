@@ -12,6 +12,7 @@ pluginManagement {
             name = 'NeoForged'
             url = 'https://maven.neoforged.net/releases/'
         }
+        maven { url = "https://maven.aliyun.com/repository/central" }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -21,4 +22,4 @@ rootProject.name = 'chainmine-core'
 
 // MultiLoader 结构：common（共享核心）+ fabric + neoforge（加载器封装）
 include 'common', 'fabric'
-// include 'neoforge' // TODO: 恢复（本地环境可访问 maven.neoforged.net 后）
+// include 'neoforge' // 本地构建：取消注释 + ./gradlew :neoforge:build（配方见 docs/NEOFORGE-BUILD.md）

@@ -1,51 +1,38 @@
-# GameTest 集成测试 —— 调研记录与实现指引
+# GameTest 集成测试 —— 已落地
 
-> 状态：**待调研**。fabric 1.21.11 的 GameTest API 与旧版不兼容，需要先按下面的调研结论实现，再本地验证。
+> 状态：**已实现并验证**（fabric 1.21.11，`./gradlew :fabric:runGametest` → 3/3 passed）
 
-## 为什么暂停（实测结论）
+## 用例
 
-用旧 API（`net.minecraft.test.GameTest` + `FabricGameTest` 接口）写的用例在 1.21.11 编译失败：
-
-| 旧写法 | 1.21.11 现状 |
+| 用例 | 验证内容 |
 | --- | --- |
-| `@net.minecraft.test.GameTest` | **不存在**（MC 注解类被移除/替换） |
-| `net.fabricmc.fabric.api.gametest.v1.FabricGameTest`（接口） | **不存在**（旧 fabric API 移除） |
-| `FabricGameTest.EMPTY_STRUCTURE` | **不存在**（无内置空结构常量） |
+| `cubeModeBreaks27Blocks` | 3×3×3 石头 + CUBE 扫描 + ChainBreaker 分 tick 破坏 → 全部变 AIR |
+| `maxBlocksHardLimit` | 5×5×5=125 个相连石头，maxBlocks=10 只扫 10 个 |
 
-## 1.21.11 的正确 API（javap 实测）
+## 1.21.11 正确 API（调研+实测结论）
 
 ```
-net.fabricmc.fabric.api.gametest.v1.GameTest  （注解，不是接口！）
-  attributes: structure() / environment() / maxTicks() / setupTicks() /
-              required() / rotation() / manualOnly() / maxAttempts() /
-              requiredSuccesses() / skyAccess()
-net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker
-net.minecraft.test.TestContext                  （MC 侧上下文，存在）
+@net.fabricmc.fabric.api.gametest.v1.GameTest    （fabric 自研注解，替代 MC 的）
+  structure 默认 "fabric-gametest-api-v1:empty"  ← 内置 8×8×8 空结构，无需 nbt 资源！
+测试方法：public void xxx(TestContext ctx)  实例方法，以 ctx.complete() 结束
+注册：fabric.mod.json 的 "fabric-gametest" entrypoint
+运行：loom { runs { gametest { server(); vmArg "-Dfabric-api.gametest=1" } } }
 ```
 
-**要点**：
-1. 用 **fabric 的 `@GameTest` 注解**（fabric-gametest-api-v1），不用 MC 的
-2. **必须提供 structure 资源**（`structure()` 指向 `data/<modid>/gametest/structures/<name>.nbt`）——没有 EMPTY_STRUCTURE 常量
-3. 测试方法签名待确认（fabric 新版可能不再传 TestContext，见 CustomTestMethodInvoker / fabric 文档）
+关键 API（TestContext，yarn 1.21.11）：
+- `setBlockState(BlockPos, Block)` / `expectBlock(Block, BlockPos)` / `getWorld()`
+- `getAbsolutePos(BlockPos)` —— **相对坐标 → 世界坐标**（GameTest 的 BlockPos 是相对结构的！扫描/破坏必须转世界坐标）
+- `createMockCreativeServerPlayerInWorld()` → ServerPlayerEntity（直接可用）
+- `addFinalTask(Runnable)` / `complete()`（1.21.11 无 succeedWhen）
 
-## 待办实现步骤
+## 踩坑记录（重要）
 
-1. 调研 fabric 1.21.11 的 gametest 方法签名（fabric 官方 wiki / fabric-example-mod 的 gametest 分支）
-2. 生成 3x3x3 空结构 nbt（用 MC 的 `data gen` 或直接找现成模板 nbt）
-3. 按新 API 重写 `ChainMineGameTests`：
-   - cubeModeBreaks27Blocks：3x3x3 石头 + CUBE 扫描 + ChainBreaker 分 tick 破坏 + 全变 AIR
-   - maxBlocksHardLimit：CONNECTED 扫描上限
-   - durabilityProtection：工具剩余 1 耐久停止
-4. `./gradlew :fabric:runGametest` 本地验证（沙盒已确认 maven.neoforged.net 不可达，但 fabric 侧可跑）
+1. **结构坐标 vs 世界坐标**：`setBlockState` 用相对坐标，`getWorld()` 是真实世界 —— BFS 扫不到方块。必须 `ctx.getAbsolutePos()` 转换。
+2. **VersionCompat 双环境 bug（产品级修复）**：loom 开发环境（runGametest/runServer）的 MC 类是 **yarn 名**（getEntityWorld），发布环境是 **intermediary 名**（method_51469）。VersionCompat 只反射 intermediary 名 → **开发环境挖掘必崩**（`Cannot resolve Entity world getter`）。已修复：两组名都试（intermediary → yarn），权限系统类名同理。
+3. **mock player 是匿名子类**（TestContext$2 extends ServerPlayerEntity）：直接 `getClass().getMethod()` 找不到 → VersionCompat 增加父类链搜索。
 
-## 为什么值得做
+## 后续可扩展
 
-GameTest 在**真实服务端世界**验证破坏链路（方块真的变 AIR、耐久真的扣），比真实服务器冒烟测试更进一步——可自动化、可进 CI。当前"真实旧版本服务器实测"已覆盖启动级验证，GameTest 补的是**行为级**验证。
-
-## 备选（当前已覆盖的行为验证）
-
-| 手段 | 验证了什么 | 状态 |
-| --- | --- | --- |
-| common JUnit（19 用例） | BFS/CUBE 算法、配置解析/clamp | ✅ 已跑通 |
-| 真实服务器实测（1.21.2/1.21.5/1.21.9/1.21.11） | 加载、mixin、命令、配置、跨版本 | ✅ 已跑通 |
-| GameTest | 真实世界的方块破坏行为 | ⏳ 待调研实现 |
+- `durabilityProtection`：工具剩余 1 耐久时连锁停止（需 mock player 持工具）
+- `requireSneak`：不潜行时不触发
+- CI 集成：GitHub Actions 跑 `./gradlew :fabric:runGametest`（Ubuntu 需 xvfb 或确认服务端无需显示）

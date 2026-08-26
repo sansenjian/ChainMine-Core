@@ -20,6 +20,9 @@
     ],
     "client": [
       "com.chainmine.ChainMineClient"
+    ],
+    "fabric-gametest": [
+      "com.chainmine.gametest.ChainMineGameTests"
     ]
   },
   "mixins": [

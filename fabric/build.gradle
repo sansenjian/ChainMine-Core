@@ -65,6 +65,8 @@ dependencies {
 
 jar {
     from(configurations.commonTransform.collect { it.isDirectory() ? it : zipTree(it) })
+    // 发布 jar 排除 GameTest 类（开发环境 runGametest 用 build/classes，不受影响）
+    exclude 'com/chainmine/gametest/**'
 }
 
 processResources {

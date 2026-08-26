@@ -4,9 +4,21 @@ pluginManagement {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        maven {
+            name = 'Architectury'
+            url = 'https://maven.architectury.dev/'
+        }
+        maven {
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases/'
+        }
         mavenCentral()
         gradlePluginPortal()
     }
 }
 
 rootProject.name = 'chainmine-core'
+
+// MultiLoader 结构：common（共享核心）+ fabric + neoforge（加载器封装）
+include 'common', 'fabric'
+// include 'neoforge' // TODO: 恢复（本地环境可访问 maven.neoforged.net 后）

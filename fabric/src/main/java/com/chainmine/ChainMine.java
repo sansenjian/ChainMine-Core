@@ -1,7 +1,9 @@
 package com.chainmine;
 
-import com.chainmine.compat.VersionCompat;
-import com.chainmine.config.ChainMineConfig;
+import com.chainmine.core.platform.Platforms;
+import com.chainmine.core.platform.VersionCompat;
+import com.chainmine.fabric.ChainMineFabricPlatform;
+import com.chainmine.core.config.ChainMineConfig;
 import com.chainmine.network.ChainMineNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -38,6 +40,9 @@ public class ChainMine implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        // Phase 0: 注册平台实现（common 依赖它获取配置目录/事件/网络）
+        Platforms.set(new ChainMineFabricPlatform());
+
         // Phase 1: 注册测试物品，验证注册表与资源加载链路
         Registry.register(Registries.ITEM, RUBY_KEY, RUBY);
 
@@ -46,7 +51,7 @@ public class ChainMine implements ModInitializer {
         registerCommands();
 
         // 性能优化: 分 tick 连锁破坏执行器（服务端主线程 tick 处理）
-        com.chainmine.util.ChainMineBreaker.init();
+        com.chainmine.core.breaker.ChainBreaker.init();
 
         // Phase 5: 网络 Payload 类型（playS2C 需双端注册）
         ChainMineNetworking.registerCommon();

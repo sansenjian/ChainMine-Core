@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+
+[[mods]]
+modId="chainmine-core"
+version="${version}"
+displayName="ChainMine Core"
+description='''Mine entire veins in one swing — the spiritual successor of Vein Miner. Sneak to chain-break blocks in a regular shape.'''
+authors="ChainMine Dev"
+logoFile="chainmine.png"
+
+[[dependencies.chainmine-core]]
+modId="neoforge"
+type="required"
+versionRange="[21.11,)"
+ordering="NONE"
+side="BOTH"

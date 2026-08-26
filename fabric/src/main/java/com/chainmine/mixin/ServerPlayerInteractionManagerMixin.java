@@ -1,10 +1,10 @@
 package com.chainmine.mixin;
 
-import com.chainmine.compat.VersionCompat;
-import com.chainmine.config.ChainMineConfig;
+import com.chainmine.core.platform.VersionCompat;
+import com.chainmine.core.config.ChainMineConfig;
 import com.chainmine.network.ChainMineNetworking;
-import com.chainmine.util.ChainMineBreaker;
-import com.chainmine.util.VeinScanner;
+import com.chainmine.core.breaker.ChainBreaker;
+import com.chainmine.core.scan.VeinScanner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -38,7 +38,7 @@ import java.util.List;
  * 原版破坏成功（{@code cir.getReturnValue() == true}）后执行补刀。
  * 补刀根据 {@code blocksPerTick} 配置二选一：
  * <ul>
- *   <li>{@code blocksPerTick > 0}：交给 {@link ChainMineBreaker} 分 tick 破坏
+ *   <li>{@code blocksPerTick > 0}：交给 {@link ChainBreaker} 分 tick 破坏
  *       （防服务端 spike，含工具保护）；</li>
  *   <li>{@code blocksPerTick == 0}：本 tick 立即全部破坏（兼容旧行为，仍含工具保护）。</li>
  * </ul>
@@ -142,7 +142,7 @@ public class ServerPlayerInteractionManagerMixin {
         ChainMineConfig config = ChainMineConfig.get();
         if (config.blocksPerTick > 0) {
             // 分 tick 破坏（默认路径）：防服务端 spike，含工具保护
-            ChainMineBreaker.startChain(player, chainMine$origin, chainMine$targetBlock,
+            ChainBreaker.startChain(player, chainMine$origin, chainMine$targetBlock,
                     new ArrayList<>(chainMine$pending), config.blocksPerTick);
         } else {
             // 单 tick 立即破坏（兼容旧行为，仍含工具保护）

@@ -18,17 +18,18 @@ plugins {
 apply plugin: 'architectury-plugin'
 
 base {
-    archivesName = 'chainmine-core-common'
+    archivesName = 'chainmine-core'
 }
 
 version = project.mod_version
 group = project.maven_group
 
 architectury {
-    common("fabric", "neoforge")
+    fabric()
 }
 
 repositories {
+    maven { url = "https://maven.terraformersmc.com/releases/" }
     maven { url = "https://maven.fabricmc.net/" }
     maven { url = "https://maven.architectury.dev/" }
     mavenCentral()
@@ -38,12 +39,31 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    compileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // 单元测试（纯逻辑，不依赖 Minecraft 运行时）
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+
+    // 单元测试
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+}
+
+// 共享核心：直接编译 common 源码（yarn 同映射，remapJar 自动 remap 进 jar）
+sourceSets {
+    main {
+        java {
+            srcDir project(':common').file('src/main/java')
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 test {

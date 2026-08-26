@@ -1,6 +1,6 @@
 package com.chainmine.client;
 
-import com.chainmine.config.ChainMineConfig;
+import com.chainmine.core.config.ChainMineConfig;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

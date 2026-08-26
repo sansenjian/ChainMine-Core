@@ -25,3 +25,4 @@ run/
 .DS_Store
 Thumbs.db
 build-*/
+*.log.gz

@@ -74,6 +74,20 @@ processResources {
     }
 }
 
+loom {
+    // 不拆分 client source set：保持单 source set 简单结构。
+    // ChainMineClient 类仅在客户端 entrypoint 被加载，服务端不会触碰。
+
+    runs {
+        gametest {
+            server()
+            name = "GameTest"
+            // fabric-api 的 GameTest 开关：服务端启动后自动跑 @GameTest 用例
+            vmArg "-Dfabric-api.gametest=1"
+        }
+    }
+}
+
 test {
     useJUnitPlatform()
 }

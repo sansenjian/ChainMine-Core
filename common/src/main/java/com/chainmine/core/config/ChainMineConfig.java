@@ -83,6 +83,8 @@ public final class ChainMineConfig {
     public static void load() {
         Path path = getConfigPath();
         if (!Files.exists(path)) {
+            // 配置缺失时重置为干净默认值再保存（避免沿用上次运行的内存值）
+            INSTANCE = new ChainMineConfig();
             save();
             ChainMineConstants.LOGGER.info("[ChainMine] Created default config at {}", path);
         } else {
